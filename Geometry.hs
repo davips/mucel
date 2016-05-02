@@ -1,11 +1,12 @@
-module Geometry(V(V),dist,stopPoint,isNear,decompoe,degrees,add,r,r2) where
+module Geometry(V(V),mag,sca,dist,stopPoint,isNear,decompoe,degrees,add,r,r2) where
+import Debug.Trace
 import Data.List
 import Data.Ord
 data V = V{x::Float, y::Float} deriving Show
-r = 30 :: Float
+r = 10 :: Float
 r2 = 2*r
-smallest = 0.000001
-degrees (V x y) = (atan2 y x) * 180 / 3.1415
+smallest = 0.000000001
+degrees (V x y) = (atan2 y x) * 180 / pi
 --collides cella cellb = dist (x cella) (y cella) (x cellb) (y cellb) < r2
 add (V x1 y1) (V x2 y2) = V (x1+x2) (y1+y2)
 dist (V x1 y1) (V x2 y2) = sqrt((x1-x2)^2 + (y1-y2)^2)
@@ -21,18 +22,20 @@ stopPoint (V x y) (V dx dy) (V p q) = if dist (V x y) (V sx sy) < dist (V x y) (
           (sx', sy') = if abs dx < smallest then (x, (-eB - eRoot) / eA2) else ((-dB - dRoot) / dA2, m*sx' + c)
           (eA2,eB,eC,eRoot) = (2, -2*q, q*q + (x-p)*(x-p) - r2*r2, sqrt(eB*eB - 2*eA2*eC))          
 
-isNear (V xi yi) (V dx dy) (V p q) = d < d / 2 + r2 && dpl < r2 --checar se p,q está nas costas
-     where (x, y) = (xi+dx/2, yi+dy/2)
-           (xf, yf) = (xi+dx, yi+dy)
-           d = dist (V x y) (V p q)
-           dpl = distpl (V p q) (V xi yi) (V xf yf)
+isNear ai@(V xi yi) v@(V dx dy) b@(V p q) = canaletou && atingivel
+     where
+          af = add ai v
+          canaletou = distpl b ai af < r2 
+          ab = sub b ai
+          atingivel = proj > 0 && (dist ai b - proj < r2)
+          proj = dot (uni ab) v
            
 decompoe :: V -> V -> V -> (V, V)
 decompoe pa pb va = (vai, fica)
      where vai = sca t $ uni pd
            fica = sub va vai 
            pd = sub pb pa
-           t = dot pd va
+           t = dot (uni pd) va
 
 sca t (V x y) = V (t*x) (t*y)
 sub (V ax ay) (V bx by) = V (ax-bx) (ay-by) 
