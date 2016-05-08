@@ -3,7 +3,7 @@ import Debug.Trace
 import Data.List
 import Data.Ord
 data V = V{x::Float, y::Float} deriving Show
-r = 8 :: Float
+r = 10 :: Float
 r2 = 2*r
 smallest = 0.0005
 degrees (V x y) = (atan2 y x) * 180 / pi

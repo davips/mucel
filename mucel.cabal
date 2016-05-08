@@ -57,7 +57,7 @@ executable mucel
   -- other-extensions:    
   
   -- Other library packages from which modules are imported.
-  build-depends:       base >=4.6 && <4.8, gloss==1.8.*, random >=1.0 && <1.2
+  build-depends:       base >=4.6 && <4.8, gloss==1.8.*, random >=1.0 && <1.2, containers
   
   -- Directories containing source files.
   -- hs-source-dirs:      
