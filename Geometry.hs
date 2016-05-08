@@ -3,9 +3,9 @@ import Debug.Trace
 import Data.List
 import Data.Ord
 data V = V{x::Float, y::Float} deriving Show
-r = 10 :: Float
+r = 8 :: Float
 r2 = 2*r
-smallest = 0.000000001
+smallest = 0.0005
 degrees (V x y) = (atan2 y x) * 180 / pi
 --collides cella cellb = dist (x cella) (y cella) (x cellb) (y cellb) < r2
 add (V x1 y1) (V x2 y2) = V (x1+x2) (y1+y2)
@@ -31,7 +31,7 @@ isNear ai@(V xi yi) v@(V dx dy) b@(V p q) = canaletou && atingivel
           proj = dot (uni ab) v
            
 decompoe :: V -> V -> V -> (V, V)
-decompoe pa pb va = (vai, fica)
+decompoe pa pb va = (fica, vai)
      where vai = sca t $ uni pd
            fica = sub va vai 
            pd = sub pb pa
