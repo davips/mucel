@@ -13,7 +13,6 @@ data Cell = Cell {cellId::Int, pos::V, vel::V, photo::Photo, electro::Electro} d
 --data Organism = Organism {cells::[Cell]}
 data World = World [Cell]
 -- data Collision = Collision {a::Cell, b::Cell, d::Float} deriving (Eq, Show)
-
 instance Eq Cell where Cell ida _ _ _ _ == Cell idb _ _ _ _ = ida == idb
 instance Ord Cell where compare = compare `on` cellId
 
@@ -21,6 +20,8 @@ w=800 :: Float
 h=400 :: Float
 mm=0.2 :: Float
 bulbs = filter (((==) Bulb) . photo)
+
+ball (Cell i p v _ _) = Ball i p v r
 
 cellColor None = greyN 0.5
 cellColor Bulb = red

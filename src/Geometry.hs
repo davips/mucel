@@ -1,8 +1,16 @@
-module Geometry(V(V),mag,sca,dist,stopPoint,isNear,decompoe,degrees,add,r,r2) where
+module Geometry(V(V),mag,sca,dist,stopPoint,isNear,decompoe,degrees,add,r,r2,timeToHit,Ball(Ball),ballId,buildPairsMap) where
+
+import Data.Maybe
+import qualified Data.Map.Strict as Map
 import Debug.Trace
 import Data.List
 import Data.Ord
+import Data.Function (on)
 data V = V{x::Float, y::Float} deriving Show
+data Ball = Ball{ballId::Int, ballP::V, ballV::V, ballR::Float}
+instance Eq Ball where Ball ida _ _ _ == Ball idb _ _ _ = ida == idb
+instance Ord Ball where compare = compare `on` ballId
+
 r = 10 :: Float
 r2 = 2*r
 smallest = 0.0005
@@ -41,4 +49,27 @@ sca t (V x y) = V (t*x) (t*y)
 sub (V ax ay) (V bx by) = V (ax-bx) (ay-by) 
 dot (V ax ay) (V bx by) = ax*bx + ay*by
 uni v@(V x y) = V (x/t) (y/t) where t = mag v
-mag (V ax ay) = sqrt $ ax*ax + ay*ay
+mag = sqrt . magSquared
+magSquared (V ax ay) = ax*ax + ay*ay
+
+
+buildPairsMap :: [Ball] -> Map.Map (Ball, Ball) Float
+buildPairsMap balls = Map.fromList $ buildPairsMap' balls
+buildPairsMap' :: [Ball] -> [((Ball, Ball), Float)]
+buildPairsMap' (ball:balls) = oneToN ++ buildPairsMap' balls
+  where
+    oneToN = map (\ball2 -> ((ball, ball2), fromJust $ timeToHit ball ball2)) balls 
+
+timeToHit (Ball _ p1 s1 r1) (Ball _ p2 s2 r2) = if baskaD <= 0 then Nothing else Just t
+  where
+    baska2A = 2 * (mag s1s2) ^ 2
+    baskamB = -2 * (dot p1p2 s1s2)
+    baskaC = (magSquared p1p2) - (r1 + r2) ^ 2
+    baskaD = baskamB ^ 2 - 2 * baska2A * baskaC
+    baskaDRooted = sqrt(baskaD)
+    tp = (baskamB + baskaDRooted) / baska2A
+    tm = (baskamB - baskaDRooted) / baska2A
+    t0 = min tp tm
+    t = if (t0 < 0) then error "Ball integrity violated!" else t0
+    p1p2 = sub p1 p2
+    s1s2 = sub s1 s2
