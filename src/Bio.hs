@@ -1,18 +1,48 @@
-module Bio(World(World), initialWorld, evolve, cellRadius, orgPosition, orgSpeed, organisms) where
+module Bio(World(World), particleInfo, initialWorld, evolve, organisms) where
 import Geometry
+import qualified Data.PQueue.Prio.Min as H
+import Data.Maybe
+-- import qualified Data.Set as S
+import Data.Function (on)
 
-data Organism = Multi {orgId::Int, subOrgs::[Organism], orgPosition::Vec, orgSpeed::Vec, angpos::Vec, angvel::Vec} | Uni {cellId::Int, orgPosition::Vec, orgSpeed::Vec} deriving Show
-data World = World {organisms::[Organism]}
+data Organism = Uni {particleInfo::ParticleInfo}
+              | Multi {particleInfo::ParticleInfo, aInfo::AngularInfo, subOrgs::[Organism]} deriving (Show)
 
-cellRadius = 30
-initialWorld = World [Uni 1 (V (-100) 0) (V 10 0), Uni 2 (V 100 0) (V (-10) 0)]
+instance Eq Organism where Uni particleInfoa == Uni particleInfob = particleInfoa == particleInfob
+instance Ord Organism where compare = compare `on` particleInfo
+data World = World {organisms::[Organism], orgHeap::Horg}
+type Horg = H.MinPQueue Float (Organism, Organism)
+-- type Sorg = S.Set Organism
+
+uni :: Int -> Float -> Float -> Float -> Float -> Float -> Organism
+uni ido xpos ypos xvel yvel rad = Uni $ ParticleInfo ido (V xpos ypos) (V xvel yvel) rad
+
+initialWorld = World orgs heap
+  where orgs = [uni 1 100 0 (-10) 0 40, uni 1 0 100 10 0 50]
+        heap = H.fromList pairs
+        pairs = [(timeToHitOrgs a b, (a, b)) | a <- orgs, b <- orgs]
+
+timeToHitOrgs a b = fromMaybe 7200000000 $ timeToHit (particleInfo a) (particleInfo b)
+
+orgPos = particlePos . particleInfo
+distOrgs a b = dist (orgPos a) (orgPos b)
 
 evolve :: World -> Float -> World
-evolve (World orgs) timeStep = World $ map (move timeStep) orgs
+evolve world 0 = world
+evolve (World orgs heap) timeStep = evolve newWorld remainingTime
+  where newWorld = World (map (move timeToFirstCollision) orgs) newHeap
+        remainingTime = timeStep - timeToFirstCollision
+        (timeToFirstCollision, _) = H.findMin heap
+        newHeap = heap
+
+move :: Float -> Organism -> Organism
+move dt u@(Uni p@(ParticleInfo oid oldPos vel _)) = u {particleInfo = p {particlePos = oldPos `add` (dt `sca` vel)}}
+move dt m@(Multi p@(ParticleInfo oid oldPos vel _) _ _) = m {particleInfo = p {particlePos = oldPos `add` (dt `sca` vel)}}
 
 
-move dt u@(Uni oid oldPos vel) = u {orgPosition = oldPos `add` (dt `sca` vel)}
-move dt m@(Multi oid suborgs oldPos vel _ _) = m {orgPosition = oldPos `add` (dt `sca` vel)}
+
+
+
 
 -- import System.Random
 -- import Data.List
@@ -23,22 +53,20 @@ move dt m@(Multi oid suborgs oldPos vel _ _) = m {orgPosition = oldPos `add` (dt
 -- import Graphics.Gloss
 -- import Data.List
 -- import Data.Ord
--- import Data.Function (on)
 -- data Photo = None | Bulb | Sensor deriving (Eq, Show)
 -- data Electro = Isolant | Wire | Battery | Motor V deriving (Show)
 -- data Organism = Multi {cellList::[Cell], pos::V, vel::V, angpos::V, angvel::V} | Cell {cellId::Int, pos::V, vel::V} deriving Show
 -- --data Organism = Multi {cells::[Cell], pos::V, vel::V, angpos::V, angvel::V} | Cell {cellId::Int, pos::V, vel::V, photo::Photo, electro::Electro} deriving Show
 -- data World = World [Cell]
 -- -- data Collision = Collision {a::Cell, b::Cell, d::Float} deriving (Eq, Show)
--- instance Eq Cell where Cell ida _ _ _ _ == Cell idb _ _ _ _ = ida == idb
--- instance Ord Cell where compare = compare `on` cellId
+
 --
 -- w=800 :: Float
 -- h=400 :: Float
 -- mm=0.2 :: Float
 -- bulbs = filter (((==) Bulb) . photo)
 --
--- ball (Cell i p v _ _) = Ball i p v r
+--
 --
 -- cellColor None = greyN 0.5
 -- cellColor Bulb = red
