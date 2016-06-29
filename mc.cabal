@@ -20,4 +20,7 @@ executable mc
                      , gloss
                      , containers
                      , ad
+                     , heap
+                     , random
+                     , mwc-random
 --                     , linkedhashmap
