@@ -56,7 +56,8 @@ Features / To do list
        * [ ] motor
        * [ ] wire
 7. [ ] reproduction
+8. [ ] friction?
 8. [ ] mobile version
 9. [ ] distributed version
-10. [ ] friction?
+10. [ ] GPU headless version
 11. [ ] 3D version?
