@@ -50,13 +50,13 @@ Features / To do list
 4. [ ] rigid bodies
 5. [ ] rotation
 6. [ ] different types of cells
-7.    [x] structure
-8.    [ ] sensor
-9.    [ ] bulb
-10.    [ ] motor
-11.    [ ] wire
-12. [ ] reproduction
-13. [ ] mobile version
-14. [ ] distributed version
-15. [ ] friction?
-16. [ ] 3D version?
+*    [x] structure
+*    [ ] sensor
+*    [ ] bulb
+*    [ ] motor
+*    [ ] wire
+7. [ ] reproduction
+8. [ ] mobile version
+9. [ ] distributed version
+10. [ ] friction?
+11. [ ] 3D version?
