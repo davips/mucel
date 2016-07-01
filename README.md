@@ -3,7 +3,7 @@ mucel - minimalist multicellular simulator
 These instructions were tested on Debian Jessie, but should work on any GNU-Linux distro.
 Just replace "sudo apt-get" by your distro equivalent command and change the respective package names when needed.
 
-Download and install local stack
+Install local stack
 --------------------------------
 ```bash
 echo "export PATH=$PATH:$HOME/.local/bin" >> $HOME/.bashrc
@@ -12,14 +12,14 @@ curl -sSL https://get.haskellstack.org/ | sh
 source $HOME/.bashrc
 ```
 
-Alternatively, download and install system-wide stack.
+Alternatively, install system-wide stack.
 ```bash
 sudo echo "deb http://download.fpcomplete.com/debian jessie main" >> /etc/apt/sources.list
 sudo apt-get update
 sudo apt-get install stack
 ```
 
-Download and install mucel
+Install mucel
 --------------------------
 Install git and OpenGL when needed.
 ```bash
