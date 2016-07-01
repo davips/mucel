@@ -41,3 +41,22 @@ Run
 ```bash
 stack exec mucel
 ```
+
+Features / To do list
+-----
+[x] 2D particle collision simulator
+[x] visualize according to real elapsed time
+[x] exact preemptory collision calculation
+[ ] rigid bodies
+[ ] rotation
+[ ] different types of cells
+    [x] structure
+    [ ] sensor
+    [ ] bulb
+    [ ] motor
+    [ ] wire
+[ ] reproduction
+[ ] mobile version
+[ ] distributed version
+[ ] friction?
+[ ] 3D version?
