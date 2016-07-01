@@ -44,20 +44,21 @@ stack exec mucel
 
 Features / To do list
 -----
-1. [x] 2D particle collision simulator
-2. [x] visualize according to real elapsed time
-3. [x] exact preemptory collision calculation
-4. [ ] rigid bodies
-5. [ ] rotation
-6. [ ] different types of cells
+* [x] 2D particle collision simulator
+* [x] visualize according to real elapsed time
+* [x] exact preemptory collision calculation
+* [ ] rigid bodies
+* [ ] rotation
+* [ ] different types of cells
        * [x] structure
        * [ ] sensor
        * [ ] bulb
        * [ ] motor
        * [ ] wire
-7. [ ] reproduction
-8. [ ] friction?
-8. [ ] mobile version
-9. [ ] distributed version
-10. [ ] GPU headless version
-11. [ ] 3D version?
+* [ ] reproduction
+* [ ] mov. quantity proportional to area
+* [ ] friction?
+* [ ] mobile version
+* [ ] distributed version
+* [ ] GPU headless version
+* [ ] 3D version?
