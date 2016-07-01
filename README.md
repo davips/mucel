@@ -50,11 +50,11 @@ Features / To do list
 4. [ ] rigid bodies
 5. [ ] rotation
 6. [ ] different types of cells
-*    [x] structure
-*    [ ] sensor
-*    [ ] bulb
-*    [ ] motor
-*    [ ] wire
+       * [x] structure
+       * [ ] sensor
+       * [ ] bulb
+       * [ ] motor
+       * [ ] wire
 7. [ ] reproduction
 8. [ ] mobile version
 9. [ ] distributed version
