@@ -6,9 +6,9 @@ Just replace "sudo apt-get" by your distro equivalent command and change the res
 Download and install local stack
 --------------------------------
 ```bash
+echo "export PATH=$PATH:$HOME/.local/bin" >> $HOME/.bashrc
 sudo apt-get install curl
 curl -sSL https://get.haskellstack.org/ | sh
-echo "export PATH=$PATH:$HOME/.local/bin" >> $HOME/.bashrc
 source $HOME/.bashrc
 ```
 
