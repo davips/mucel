@@ -27,7 +27,7 @@ sudo apt-get install git freeglut3 freeglut3-dev
 ```
 
 Build mucel (this can take 5 or more minutes depending on your internet connection and hardware).
-Stack avoids to interfere with your system, it also needs more recent packages than distros usually supply,
+Stack avoids to interfere with your system, it also needs more recent packages than usually supplied by distros,
 so the Haskell compiler and libraries will be downloaded locally.
 ```bash
 git clone https://github.com/davips/mucel.git
