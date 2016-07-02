@@ -3,7 +3,7 @@ import Bio; import Geometry; import Graphics.Gloss; import Debug.Trace
 import Graphics.Gloss.Interface.Pure.Simulate (simulate,ViewPort)
 import qualified Data.Vector as Ve
 
-(w, h, fps) = (1000, 1000, 30)
+(w, h, fps) = (800, 600, 30)
 
 window :: (ViewPort -> Float -> World -> World) -> World -> IO ()
 window stepFunction world = simulate g black fps world draw stepFunction
@@ -21,7 +21,7 @@ orgPos = particlePos . particleInfo
 orgRad = particleRad . particleInfo
 
 draw :: World -> Picture
-draw (World orgs _) = color white $ pictures $ Line [(-w,-h), (-w,h), (w,h), (w,-h), (-w,-h)] : sprites
+draw (World orgs _) = color white $ Scale 0.15 0.15 $ pictures $ Line [(-1000,-1000), (-1000,1000), (1000,1000), (1000,-1000), (-1000,-1000)] : sprites
   where sprites = Ve.toList $ Ve.map (\x -> drawSprite (orgPos x) $ orgRad x) orgs
 
 drawSprite :: Vec -> Float -> Picture

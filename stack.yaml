@@ -1,4 +1,7 @@
-flags: {}
+flags:
+  gloss: 
+    GLUT: true
+    
 extra-package-dbs: []
 packages:
 - '.'
