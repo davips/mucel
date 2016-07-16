@@ -25,8 +25,8 @@ initialWorld = World orgs heap
               , Wall $ ParticleInfo 2 (V (-1000) (-1000)) (V 0 0) 0
               , Wall $ ParticleInfo 3 (V (1000) (-1000)) (V 0 0) 0]
         rpos = randomlist 900 (-900)
-        rvel = randomlist 500 (-500)
-        rrad = randomlist 10 30
+        rvel = randomlist 400 (-400)
+        rrad = randomlist 10 40
         rtup = zip6 [4..totalCells + 3] (rpos 243) (rpos 745) (rvel 452) (rvel 245) (rrad 356)
         cells = [uni i x y vx vy r | (i, x, y, vx, vy, r) <- rtup]
         heap = H.fromList nodes
