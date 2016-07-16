@@ -38,7 +38,8 @@ timeToHit (ParticleInfo _ p1 s1 r1) (ParticleInfo _ p2 s2 r2) = if baskaD <= 0 t
     tp = (baskamB + baskaDRooted) / baska2A
     tm = (baskamB - baskaDRooted) / baska2A
     t0 = min tp tm
-    maybeT = traceShow (tp,tm) $ if t0 < 0 then Nothing else Just t0
+    maybeT = if t0 < 0 then Nothing else Just t0
+    --maybeT = traceShow (tp,tm) $ if t0 < 0 then Nothing else Just t0
     p1p2 = p1 `sub` p2
     s1s2 = s1 `sub` s2
 

@@ -10,7 +10,7 @@ window stepFunction world = simulate g black fps world draw stepFunction
   where g = InWindow "bla" (round w, round h) (0, 0) --FullScreen (1920, 1080)
 
 update :: ViewPort -> Float -> World -> World
-update _ timeStep world = debug world $ evolve world timeStep
+update _ timeStep world = evolve world timeStep
 
 debug :: World -> b -> b
 debug world x = traceShow (sum $ kinEnergy $ Ve.toList (organisms world)) x

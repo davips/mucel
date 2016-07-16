@@ -1,5 +1,5 @@
 module Bio(World(World), particleInfo, initialWorld, evolve, organisms) where
-import Geometry; import Data.Maybe; import Debug.Trace; import Data.Function (on)
+import Geometry; import Data.Maybe; import Debug.Trace; import Rnd; import Config; import Data.List; import Data.Function (on)
 import qualified Data.PQueue.Prio.Min as H
 import qualified Data.Vector as Ve
 
@@ -19,29 +19,16 @@ orgVel = particleVel . particleInfo
 updatePV org p v = org {particleInfo = (particleInfo org) {particlePos = p, particleVel = v}}
 distOrgs a b = dist (orgPos a) (orgPos b)
 initialWorld = World orgs heap
-  where list = [Wall $ ParticleInfo 0 (V (1000) (1000)) (V 0 0) 0
+  where list = walls ++ cells
+        walls = [Wall $ ParticleInfo 0 (V (1000) (1000)) (V 0 0) 0
               , Wall $ ParticleInfo 1 (V (-1000) (1000)) (V 0 0) 0
               , Wall $ ParticleInfo 2 (V (-1000) (-1000)) (V 0 0) 0
-              , Wall $ ParticleInfo 3 (V (1000) (-1000)) (V 0 0) 0
-              , uni 4   (100)  (-100)   1000 (-165)  12
-              , uni 5    (-100)  0      0 3000    60
-              , uni 6     100  0      (-112) 300    10
-              , uni 7   (-100) (-100)   (-2100)  50    15
-              , uni 8   (-100)   100    10  800    20
-              , uni 9   (100)    100    (-90)  300    16
-              , uni 10   (900)  (-100)   100 (-605)  12
-              , uni 11    (-800)  0      0 0    60
-              , uni 12     700  0      (-212) 2000    10
-              , uni 13   (-500) (-100)   10  50    15
-              , uni 14   (-400)   100    10  800    20
-              , uni 15   (300)    100    (-900)  30    16
-              , uni 16   (200)  (-100)   100 (-605)  12
-              , uni 17    (-100)  0      0 0    60
-              , uni 18     0  0      (-1120) 0    10
-              , uni 19   (-100) (-900)   1000  500    15
-              , uni 20   (-100)   800    10  8000    20
-              , uni 21   (100)    700    (-9000)  30    16
-              ]
+              , Wall $ ParticleInfo 3 (V (1000) (-1000)) (V 0 0) 0]
+        rpos = randomlist 900 (-900)
+        rvel = randomlist 500 (-500)
+        rrad = randomlist 10 30
+        rtup = zip6 [4..totalCells + 3] (rpos 243) (rpos 745) (rvel 452) (rvel 245) (rrad 356)
+        cells = [uni i x y vx vy r | (i, x, y, vx, vy, r) <- rtup]
         heap = H.fromList nodes
         nodes = [(Node (orgId a) (orgId b) (timeToCollision a b), 0) | a <- list, b <- list, orgId a < orgId b]
         orgs = Ve.fromList list
@@ -77,7 +64,7 @@ updateOrg timeToFirstCollision dt idA idB posA posB velA velB org
   | timeToFirstCollision == dt && orgId org == idA = updatePV org posA newVelA
   | timeToFirstCollision == dt && orgId org == idB = updatePV org posB newVelB
   | otherwise                                      = moveUntil dt org --existeessa cond?
-    where newVelA = traceShow "bateu" $ ficaNoA `add` vaiProA
+    where newVelA = ficaNoA `add` vaiProA
           newVelB = ficaNoB `add` vaiProB
           (ficaNoA, vaiProB) = decompoe posA posB velA
           (ficaNoB, vaiProA) = decompoe posB posA velB
