@@ -1,13 +1,12 @@
 module Bio(World(World), particleInfo, initialWorld, evolve, organisms) where
-import Geometry; import Data.Maybe; import Debug.Trace; import Rnd; import Config; import Data.List; import Data.Function (on)
-import qualified Data.PQueue.Prio.Min as H
+import Geometry; import Data.Maybe; import Debug.Trace; import Rnd; import Config; import Data.List
+--import PQueue
+--import PArray
+import PList
 import qualified Data.Vector as Ve
 
-type Horg = H.MinPQueue HeapNode Float
 type Orgs = Ve.Vector Organism
 data World = World {organisms::Orgs, collisionHeap::Horg}
-data HeapNode = Node {fstOrgId::Int, sndOrgId::Int, timeHeapNode::Float} deriving (Show, Eq)
-instance Ord HeapNode where compare = compare `on` timeHeapNode
 data Organism = Uni {particleInfo::ParticleInfo}
               | Multi {particleInfo::ParticleInfo, aInfo::AngularInfo, subOrgs::[Organism]}
               | Wall {particleInfo::ParticleInfo} deriving (Show)
@@ -26,11 +25,12 @@ initialWorld = World orgs heap
               , Wall $ ParticleInfo 3 (V (1000) (-1000)) (V 0 0) 0]
         rpos = randomlist 900 (-900)
         rvel = randomlist 400 (-400)
-        rrad = randomlist 10 40
-        rtup = zip6 [4..totalCells + 3] (rpos 243) (rpos 745) (rvel 452) (rvel 245) (rrad 356)
+        rrad = randomlist 10 20
+        ids = [4..totalCells + 3]
+        rtup = zip6 ids (rpos 243) (rpos 745) (rvel 452) (rvel 245) (rrad 356)
         cells = [uni i x y vx vy r | (i, x, y, vx, vy, r) <- rtup]
-        heap = H.fromList nodes
-        nodes = [(Node (orgId a) (orgId b) (timeToCollision a b), 0) | a <- list, b <- list, orgId a < orgId b]
+        heap = build nodes
+        nodes = [Node (orgId a) (orgId b) (timeToCollision a b) | a <- list, b <- list, orgId a < orgId b]
         orgs = Ve.fromList list
 
 uni :: Int -> Float -> Float -> Float -> Float -> Float -> Organism
@@ -47,10 +47,10 @@ evolve (World orgs heap) timeStep = evolve newWorld remainingTime -- This recurs
   where newWorld = World newOrgs newHeap
         remainingTime = timeStep - dt
         newOrgs = Ve.map (updateOrg timeToFirstCollision dt orgIdA orgIdB posA posB velA velB) orgs
-        newHeap = if timeStep <= timeToFirstCollision then H.mapKeysMonotonic (\x -> x {timeHeapNode = timeHeapNode x - dt}) heap
-                  else H.mapKeys (updateNode timeToFirstCollision newOrgs dt orgIdA orgIdB) heap
+        newHeap = if timeStep <= timeToFirstCollision then decreaseAll dt heap
+                  else updateAll (updateTime timeToFirstCollision newOrgs dt orgIdA orgIdB) heap
         dt = if timeToFirstCollision==0 then timeStep else min timeToFirstCollision timeStep
-        (Node orgIdA orgIdB timeToFirstCollision, _) = H.findMin heap
+        Node orgIdA orgIdB timeToFirstCollision = findMin heap
         posA = orgPos $ moveUntil dt $ Ve.unsafeIndex orgs orgIdA
         posB = orgPos $ moveUntil dt $ Ve.unsafeIndex orgs orgIdB
         velA = orgVel $ Ve.unsafeIndex orgs orgIdA
@@ -63,14 +63,14 @@ updateOrg timeToFirstCollision dt idA idB posA posB velA velB org
   | timeToFirstCollision == dt && orgId org == idB && (idA == 1 || idA == 3) = updatePV org posB velB {vecX = -vecX velB}
   | timeToFirstCollision == dt && orgId org == idA = updatePV org posA newVelA
   | timeToFirstCollision == dt && orgId org == idB = updatePV org posB newVelB
-  | otherwise                                      = moveUntil dt org --existeessa cond?
+  | otherwise                                      = moveUntil dt org --existe essa cond?
     where newVelA = ficaNoA `add` vaiProA
           newVelB = ficaNoB `add` vaiProB
           (ficaNoA, vaiProB) = decompoe posA posB velA
           (ficaNoB, vaiProA) = decompoe posB posA velB
 
-updateNode t1 _ t2 _ _ pair | t2 == 0 = pair
-updateNode timeToFirstCollision orgs dt idAhit idBhit pair@(Node idA idB time) = pair {timeHeapNode = newTime}
+updateTime t1 _ t2 _ _ pair | t2 == 0 = pair
+updateTime timeToFirstCollision orgs dt idAhit idBhit node@(Node idA idB time) = updateNode node newTime
   where newTime = if idA == idAhit || idA == idBhit || idB == idAhit || idB == idBhit
                   then timeToCollision (orgs `Ve.unsafeIndex` idA) (orgs `Ve.unsafeIndex` idB)
                   else time - dt
