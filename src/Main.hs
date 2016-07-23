@@ -1,6 +1,6 @@
 module Main(main) where
-import Bio
 import View
+import World
 
 main :: IO ()
 main = window update initialWorld

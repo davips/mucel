@@ -1,4 +1,5 @@
-module Geometry(Vec(V), vecX, vecY, dist, AngularInfo(AngularInfo), roundResidual, veryLargeFloat, particleId, particlePos, particleVel, particleRad, mag,sca,add,timeToHit,ParticleInfo(ParticleInfo), decompoe, distPointToLine, timeToHitWall) where
+module Geometry(Vec(V), vecX, vecY, dist, AngularInfo(AngularInfo), roundResidual, veryLargeFloat, particleId, particlePos, particleVel, particleRad, mag,sca,add,timeToHit,ParticleInfo(ParticleInfo), decompoe, distPointToLine, timeToHitWall, move) where
+import Config
 import Data.Function (on)
 import Debug.Trace
 
@@ -8,8 +9,6 @@ instance Eq ParticleInfo where ParticleInfo ida _ _ _ == ParticleInfo idb _ _ _ 
 instance Ord ParticleInfo where compare = compare `on` particleId
 data AngularInfo = AngularInfo {angPos::Vec, angVel::Vec} deriving (Show)
 
-debug res = traceShow res res
-(verySmallFloat, veryLargeFloat) = (0.000000001, 3600 * 24 * 365 * 1000 :: Float)
 sca t (V x y) = V (t*x) (t*y)
 sub (V ax ay) (V bx by) = V (ax-bx) (ay-by)
 dot (V ax ay) (V bx by) = ax*bx + ay*by
@@ -42,6 +41,14 @@ timeToHit (ParticleInfo _ p1 s1 r1) (ParticleInfo _ p2 s2 r2) = if baskaD <= 0 t
     --maybeT = traceShow (tp,tm) $ if t0 < 0 then Nothing else Just t0
     p1p2 = p1 `sub` p2
     s1s2 = s1 `sub` s2
+
+--timeToHitBody (ParticleInfo _ p1 s1 r1) (ParticleInfo _ p2 s2 r2) (AngularInfo ap2 as2) =
+
+
+move :: Float -> ParticleInfo -> ParticleInfo
+move 0 x = x
+move dt p@(ParticleInfo oid oldPos vel _) = p {particlePos = oldPos `add` (dt `sca` vel)}
+-- move dt p@(ParticleInfo oid oldPos vel _) (AngularInfo ap2 as2) = p {particlePos = oldPos `add` (dt `sca` vel)}
 
 add (V x1 y1) (V x2 y2) = V (x1+x2) (y1+y2)
 dist (V x1 y1) (V x2 y2) = sqrt((x1-x2)^2 + (y1-y2)^2)
