@@ -10,10 +10,25 @@ window stepFunction world = simulate g black fps world draw stepFunction
 
 update _ timeStep world = evolve world timeStep
 
-debug world = debug2 (sum $ kinEnergy world)
+d2k :: [Organism] -> [Organism]
+d2k world = if kinMonitor then d2 (sum $ kinEnergy world) world else world
 
-draw world = color white $ Scale 0.15 0.15 $ pictures $ Line [(-w2,-w2), (-w2,w2), (w2,w2), (w2,-w2), (-w2,-w2)] : sprites
-  where sprites = wtoList $ wmapi (\x -> drawSprite (orgPos x) $ orgRad x) world
+verify :: World -> Picture -> Picture
+verify world pic = if invMonitor then if null invasions then pic else d2 invasions pic else pic
+  where invasions = filter (\(_, x) -> x < -verySmallFloat) dists
+        dists = [(wt a b world, distOrgs a b - orgRad a - orgRad b) | a <- os, b <- os, idn a < idn b]
+        os = wtoList world
+
+org2part :: Organism -> [ParticleInfo]
+org2part (Uni p) = [p]
+org2part (Multi _ _ orgs) = concatMap org2part orgs
+org2part (Wall _) = []
+
+draw :: World -> Picture
+draw world = verify world $ color white $ Scale 0.15 0.15 $ pictures $ quadro : sprites
+  where quadro = Line [(-w2,-w2), (-w2,w2), (w2,w2), (w2,-w2), (-w2,-w2)]
+        sprites = map desenha $ concatMap org2part $ d2k $ wtoList world
+        desenha part = drawSprite (particlePos part) (particleRad part)
 
 drawSprite :: Vec -> Float -> Picture
 drawSprite (V x y) r = translate x y $ color blue $ circleSolid r

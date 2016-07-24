@@ -16,12 +16,13 @@ executable mucel
   hs-source-dirs:      src
   main-is:             Main.hs
   default-language:    Haskell2010
-  other-modules:       Bio, Geometry, View, Rnd, Config, PQueue, PArray, Physics, World, Debug, PList, Struct
+  other-modules:       Bio, Geometry, View, Rnd, Config, Physics, World, Debug, PList, Struct
   build-depends:       base >= 4.7 && < 5
                      , gloss
                      , containers
                      , logict
                      , ad
-                     , pqueue
+                     , pretty-show
+--                     , pqueue
                      , vector
                      , random
