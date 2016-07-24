@@ -1,7 +1,7 @@
-module Struct(Struct(Struct), Identifyable(idn), wbuild, wmapi, wmapt, wtoList, wmin, witem, wupdi, wdect) where
+module Struct(Struct(Struct), Identifyable(idn), wbuild, wmapi, wmapt, wtoList, wmin, witem, wupdi, wdect, wupdt) where
 import PList
 import qualified Data.Vector as V
-data Struct a = Struct {sitems :: V.Vector a, stimes :: TimeList, offset :: Float}
+data Struct a = Struct {sitems :: V.Vector a, stimes :: TimeList, offset :: Float} deriving Show
 class Identifyable a where idn :: a -> Int
 
 wbuild :: Identifyable a => (a -> a -> Float) -> [a] -> Struct a
@@ -20,6 +20,12 @@ wmin (Struct items times o) = (minTime - o, V.unsafeIndex items idA, V.unsafeInd
 
 wdect :: Float -> Struct a -> Struct a
 wdect t s@(Struct _ _ o) = s{offset = t + o}
+
+wupdt :: Identifyable a => (a -> a -> Float -> Float) -> a -> Struct a -> Struct a
+wupdt f x (Struct is ts o) = Struct is (map f' selected ++ rest) o
+  where f' (Node ida idb t) = Node ida idb $ f (V.unsafeIndex is ida) (V.unsafeIndex is idb) (t - o) + o
+        (selected, rest) = span crit ts
+        crit (Node a b _) = a == idn x || b == idn x
 
 
 

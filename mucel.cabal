@@ -22,6 +22,7 @@ executable mucel
                      , containers
                      , logict
                      , ad
-                     , pqueue
+                     , pretty-show
+--                     , pqueue
                      , vector
                      , random

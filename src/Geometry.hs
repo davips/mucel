@@ -1,13 +1,15 @@
-module Geometry(Vec(V), vecX, vecY, dist, AngularInfo(AngularInfo), roundResidual, veryLargeFloat, particleId, particlePos, particleVel, particleRad, mag,sca,add,timeToHit,ParticleInfo(ParticleInfo), decompoe, distPointToLine, timeToHitWall, move) where
+module Geometry(Vec(V), vecX, vecY, dist, AngularInfo(AngularInfo), roundResidual, veryLargeFloat, particleId, particlePos, particleVel, particleRad, mag,sca,add,timeToHit,ParticleInfo(ParticleInfo, SubParticleInfo), decompoe, distPointToLine, timeToHitWall, move, movea, mean, maxDist, massCenter, sub, angPos) where
 import Config
 import Data.Function (on)
 import Debug.Trace
+import Data.List
 
 data Vec = V{vecX::Float, vecY::Float} deriving Show
-data ParticleInfo = ParticleInfo {particleId::Int, particlePos::Vec, particleVel::Vec, particleRad::Float} deriving (Show)
+data ParticleInfo = ParticleInfo {particleId::Int, particlePos::Vec, particleVel::Vec, particleRad::Float}
+                  | SubParticleInfo {particleId::Int, particlePos::Vec, particleDist::Float, particleAng::Float, particleRad::Float} deriving (Show)
 instance Eq ParticleInfo where ParticleInfo ida _ _ _ == ParticleInfo idb _ _ _ = ida == idb
 instance Ord ParticleInfo where compare = compare `on` particleId
-data AngularInfo = AngularInfo {angPos::Vec, angVel::Vec} deriving (Show)
+data AngularInfo = AngularInfo {angPos::Float, angVel::Float} deriving (Show)
 
 sca t (V x y) = V (t*x) (t*y)
 sub (V ax ay) (V bx by) = V (ax-bx) (ay-by)
@@ -48,7 +50,10 @@ timeToHit (ParticleInfo _ p1 s1 r1) (ParticleInfo _ p2 s2 r2) = if baskaD <= 0 t
 move :: Float -> ParticleInfo -> ParticleInfo
 move 0 x = x
 move dt p@(ParticleInfo oid oldPos vel _) = p {particlePos = oldPos `add` (dt `sca` vel)}
--- move dt p@(ParticleInfo oid oldPos vel _) (AngularInfo ap2 as2) = p {particlePos = oldPos `add` (dt `sca` vel)}
+
+movea :: Float -> AngularInfo -> AngularInfo
+movea 0 x = x
+movea dt a@(AngularInfo pos vel) = a {angPos = pos + dt * vel}
 
 add (V x1 y1) (V x2 y2) = V (x1+x2) (y1+y2)
 dist (V x1 y1) (V x2 y2) = sqrt((x1-x2)^2 + (y1-y2)^2)
@@ -68,3 +73,11 @@ projectedVec :: Vec -> Vec -> Vec -> Vec
 projectedVec v a b = (uba `dot` v) `sca` uba
   where uba = uni $ b `sub` a
 -- degrees (V x y) = atan2 y x * 180 / pi
+
+mean xs = realToFrac (sum xs) / genericLength xs
+
+maxDist :: [Vec] -> Float
+maxDist xs = maximum [dist a b | a <- xs, b <- xs]
+
+massCenter :: [Vec] -> Vec
+massCenter vecs = V (mean $ map vecX vecs) (mean $ map vecY vecs)

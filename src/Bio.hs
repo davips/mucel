@@ -1,4 +1,4 @@
-module Bio(World, Organism(Wall, Uni), particleInfo, orgId, orgPos, orgVel, orgRad, updatePV, distOrgs) where
+module Bio(World, Organism(Wall, Uni, Multi), particleInfo, orgId, orgPos, orgVel, orgRad, updatePV, distOrgs, orgPosX, orgPosY, subOrgs) where
 import Config; import Geometry
 import Struct (Struct, Identifyable, idn)
 
@@ -10,6 +10,7 @@ instance Identifyable Organism where idn = orgId
 
 orgId = particleId . particleInfo
 orgPos = particlePos . particleInfo
+(orgPosX, orgPosY) = (vecX . particlePos . particleInfo, vecY . particlePos . particleInfo)
 orgVel = particleVel . particleInfo
 orgRad = particleRad . particleInfo
 updatePV org p v = org {particleInfo = (particleInfo org) {particlePos = p, particleVel = v}}

@@ -10,10 +10,14 @@ window stepFunction world = simulate g black fps world draw stepFunction
 
 update _ timeStep world = evolve world timeStep
 
-debug world = debug2 (sum $ kinEnergy world)
+debug world = d2 (sum $ kinEnergy world)
 
 draw world = color white $ Scale 0.15 0.15 $ pictures $ Line [(-w2,-w2), (-w2,w2), (w2,w2), (w2,-w2), (-w2,-w2)] : sprites
-  where sprites = wtoList $ wmapi (\x -> drawSprite (orgPos x) $ orgRad x) world
+  where sprites = concatMap desenha $ wtoList world
+        desenha u@(Uni _) = [drawSprite (orgPos u) $ orgRad u]
+        -- desenha (Multi p v (org:orgs)) = [drawSprite (particlePos p) (particleRad p)]
+        desenha (Multi p v (org:orgs)) = desenha org ++ desenha (Multi p v orgs)
+        desenha _ = []
 
 drawSprite :: Vec -> Float -> Picture
 drawSprite (V x y) r = translate x y $ color blue $ circleSolid r
