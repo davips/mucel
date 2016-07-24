@@ -1,25 +1,49 @@
 module Physics(timeToCollision, evolve, kinEnergy) where
-import Config; import Geometry; import Bio; import Struct
+import Config; import Debug; import Geometry; import Bio; import Struct
 import Data.Maybe --; import Data.List
--- import qualified Data.Vector as Ve
 
-kinEnergy = map ((^2) . mag . orgVel)
+kinEnergy = map $ (^2) . mag . orgVel
 
 timeToCollision :: Organism -> Organism -> Float
-timeToCollision (Wall particleInfoW) b = fromMaybe veryLargeFloat $ timeToHitWall (particleInfo b) particleInfoW
+timeToCollision (Wall wallInfo) b = fromMaybe veryLargeFloat $ timeToHitWall (particleInfo b) wallInfo
 timeToCollision a b@(Wall _) = timeToCollision b a
 timeToCollision a b = fromMaybe veryLargeFloat $ timeToHit (particleInfo a) (particleInfo b)
 
-evolve :: World Organism -> Float -> World Organism
+evolve :: World -> Float -> World
 evolve world dt
-  | dt == 0      = world
-  | dt < minTime = wmap (walk dt) world
-  where minTime = 999
-  
+  | abs dt < verySmallFloat = world
+  | hitTime > dt            = wmapt recalculate $ anda dt world
+  -- | hitTime > dt            = wdect dt $ anda dt world
+  | hitTime == 0            = world'
+  | otherwise               = evolve world' remTime
+  where (hitTime, orga, orgb) = wmin world
+        remTime               = dt - hitTime
+        world'                = wmapt recalculate $ andaPColidir orga orgb hitTime world
+        recalculate a b t     = timeToCollision a b
+        (orga', orgb')        = collide orga orgb
+
+anda t = wmapi $ walk t
+
+andaPColidir a b t world = wupdi b' $ wupdi a' world'
+  where world'   = wmapi (walk t) world
+        (a', b') = collide (witem a world') (witem b world')
+
 walk :: Float -> Organism -> Organism
 walk dt u@(Uni p) = u {particleInfo = move dt p}
 --moveUntil dt m@(Multi p@(ParticleInfo oid oldPos vel _) _ _) = m {particleInfo = p {particlePos = oldPos `add` (dt `sca` vel)}}
 walk _ x = x
+
+collide wall@(Wall (ParticleInfo pid _ _ _)) org@(Uni (ParticleInfo _ pos vel _))
+  |  pid == 0 || pid == 2 = (wall, updatePV org pos vel{vecY = -vecY vel})
+  |  pid == 1 || pid == 3 = (wall, updatePV org pos vel{vecX = -vecX vel})
+
+collide orga orgb = (updatePV orga posA newVelA, updatePV orgb posB newVelB)
+    where newVelA = ficaNoA `add` vaiProA
+          newVelB = ficaNoB `add` vaiProB
+          (ficaNoA, vaiProB) = decompoe posA posB velA
+          (ficaNoB, vaiProA) = decompoe posB posA velB
+          (posA, posB) = (orgPos orga, orgPos orgb)
+          (velA, velB) = (orgVel orga, orgVel orgb)
 
 -- evolve (World orgs heap) timeStep = evolve newWorld remainingTime
 --   where newWorld = World newOrgs newHeap

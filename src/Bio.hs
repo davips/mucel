@@ -1,9 +1,12 @@
-module Bio(Organism(Wall, Uni), particleInfo, orgId, orgPos, orgVel, orgRad, updatePV, distOrgs) where
+module Bio(World, Organism(Wall, Uni), particleInfo, orgId, orgPos, orgVel, orgRad, updatePV, distOrgs) where
 import Config; import Geometry
+import Struct (Struct, Identifyable, idn)
 
+type World = Struct Organism
 data Organism = Uni {particleInfo::ParticleInfo}
               | Multi {particleInfo::ParticleInfo, aInfo::AngularInfo, subOrgs::[Organism]}
               | Wall {particleInfo::ParticleInfo} deriving (Show)
+instance Identifyable Organism where idn = orgId
 
 orgId = particleId . particleInfo
 orgPos = particlePos . particleInfo
