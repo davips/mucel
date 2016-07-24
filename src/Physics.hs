@@ -12,15 +12,16 @@ timeToCollision a b = fromMaybe veryLargeFloat $ timeToHit (particleInfo a) (par
 evolve :: World -> Float -> World
 evolve world dt
   | abs dt < verySmallFloat = world
-  | hitTime > dt            = wmapt recalculate $ anda dt world
-  -- | hitTime > dt            = wdect dt $ anda dt world
+  -- | hitTime > dt            = wmapt recalculate $ anda dt world
+  | hitTime > dt            = wdect dt $ anda dt world
   | hitTime == 0            = world'
   | otherwise               = evolve world' remTime
   where (hitTime, orga, orgb) = wmin world
         remTime               = dt - hitTime
         world'                = wmapt recalculate $ andaPColidir orga orgb hitTime world
-        recalculate a b t     = timeToCollision a b
         (orga', orgb')        = collide orga orgb
+
+recalculate a b t = timeToCollision a b
 
 anda t = wmapi $ walk t
 
