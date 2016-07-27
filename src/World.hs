@@ -9,10 +9,10 @@ reduceVel org = updatePV org (orgPos org) (0.05 `sca` orgVel org)
 
 w2 = width / 2
 
-initialWorld = wbuild timeToCollision $ d1 $  combo $! initialWorld0
+initialWorld = build timeToCollision $ combo $! initialWorld0
 
-initialWorld1 = [ Uni $ ParticleInfo 0 (V (-40) 0) (V (-5) 0) 100
-                , Uni $ ParticleInfo 1 (V 40 0) (V (-100) 8) 100
+initialWorld1 = [ Uni $ ParticleInfo 0 (V (-400) 0) (V 100 0) 30
+                , Uni $ ParticleInfo 1 (V 400 0) (V (-100) 8) 30
                 , Uni $ ParticleInfo 2 (V (-50) 800) (V 0 (-2)) 100
                 ]
 
@@ -66,14 +66,14 @@ uninvade oa ob = ob'
 
 
 
-initialWorld0 = walls ++ cells ++ ( d1 $ combo circles)
+initialWorld0 = walls ++ cells ++ combo circles
   where walls = [Wall $ ParticleInfo 0 (V w2 w2) (V 0 0) 0
               , Wall $ ParticleInfo 1 (V (-w2) w2) (V 0 0) 0
               , Wall $ ParticleInfo 2 (V (-w2) (-w2)) (V 0 0) 0
               , Wall $ ParticleInfo 3 (V w2 (-w2)) (V 0 0) 0]
-        circles = concat [circle seed 10 (totalCells + 4) 20 0 0
-                          , circle (seed+1) 16 (totalCells + 14) 20 500 500
-                          -- , circle (seed+2) 8 (totalCells + 30) 20 (-500) (-500)
+        circles = concat [circle seed 10 (totalCells + 4) 14 0 0
+                          , circle (seed+1) 12 (totalCells + 14) 14 500 500
+                          , circle (seed+2) 60 (totalCells + 26) 21 (-500) (-700)
                           ]
         cells = [unic i x y vx vy r | (i, x, y, vx, vy, r) <- rtup]
         -- multicells = concat [multi i x y vx vy a n minRad (seed + 324 * i) | (i, x, y, vx, vy, a, n) <- rtupm]
@@ -125,7 +125,7 @@ circle seed n = chain (replicate n $ 2 * pi / fromIntegral n) 0 vels
 
 chain :: [Float] -> Float -> [(Float,Float)]-> Int -> Float -> Float -> Float  -> [Organism]
 chain _ _ [] _ _ _ _ = []
-chain (ang:angs) ang0 ((vx,vy):vels) ido rad x y = unic ido x y vx vy rad : chain angs (ang + ang0) vels (ido + 1) rad x' y'
+chain (ang:angs) ang0 ((vx,vy):vels) ido rad x y = unic ido x y vx (-200) rad : chain angs (ang + ang0) vels (ido + 1) rad x' y'
   where x' = x + 1.5 * rad * cos (ang + ang0)
         y' = y + 1.5 * rad * sin (ang + ang0)
 -- chain :: Float -> Int -> Float -> Float -> Float -> [Float] -> [Organism]

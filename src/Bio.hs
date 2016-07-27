@@ -7,6 +7,7 @@ data Organism = Uni {particleInfo::ParticleInfo}
               | Multi {particleInfo::ParticleInfo, aInfo::AngularInfo, subOrgs::[Organism]}
               | Wall {particleInfo::ParticleInfo} deriving (Show)
 instance Identifyable Organism where idn = orgId
+instance Eq Organism where a == b = orgId a == orgId b
 
 orgId = particleId . particleInfo
 orgPos = particlePos . particleInfo

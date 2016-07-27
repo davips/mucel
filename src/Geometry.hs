@@ -1,7 +1,7 @@
 module Geometry(Vec(V), vecX, vecY, dist, AngularInfo(AngularInfo), roundResidual, veryLargeFloat, particleId, particlePos, particleVel, particleRad, mag,sca,add,timeToHit,ParticleInfo(ParticleInfo, SubParticleInfo), decompoe, distPointToLine, timeToHitWall, move, movea, mean, maxDist, massCenter, sub, angPos, uni) where
 import Config
 import Data.Function (on)
-import Debug.Trace
+import Debug
 import Data.List
 
 data Vec = V{vecX::Float, vecY::Float} deriving (Eq, Show)
@@ -38,14 +38,13 @@ timeToHit (ParticleInfo _ p1 s1 r1') (ParticleInfo _ p2 s2 r2') = if baskaD < 0 
     baskaDRooted = sqrt baskaD --error "Particle integrity violated!"
     tp = (baskamB + baskaDRooted) / baska2A
     tm = (baskamB - baskaDRooted) / baska2A
-    (t0, r1, r2) = if sqrt p1p2sq < 0.99 * (r1' + r2')
-                   then (max tp tm, 0.95 * r1', 0.95 * r2')
+    (t0, r1, r2) = if sqrt p1p2sq < 0.99 * (r1' + r2') -- se há intersecção suficiente, aceita que a segunda solução seja negativa
+                   then (max tp tm, 0.9899 * r1', 0.9899 * r2') -- reduz raio pra evitar escape, mas sem reduzir a ponto de ficar sem intersecção
                    else (min tp tm, r1', r2')
     p1p2sq = magSquared p1p2
     r1r2 = r1 + r2
 
-    maybeT = if t0 < 0 then Nothing else Just t0
-    --maybeT = traceShow (tp,tm) $ if t0 < 0 then Nothing else Just t0
+    maybeT = if t0 <= 0 then Nothing else Just t0 -- t == 0 é ambíguo, então considera sem colisão; embora nunca deva ocorrer
     p1p2 = p1 `sub` p2
     s1s2 = s1 `sub` s2
 
