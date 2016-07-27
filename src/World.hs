@@ -73,7 +73,7 @@ initialWorld0 = walls ++ cells ++ ( d1 $ combo circles)
               , Wall $ ParticleInfo 3 (V w2 (-w2)) (V 0 0) 0]
         circles = concat [circle seed 10 (totalCells + 4) 20 0 0
                           , circle (seed+1) 16 (totalCells + 14) 20 500 500
-                          , circle (seed+2) 8 (totalCells + 30) 20 (-500) (-500)
+                          -- , circle (seed+2) 8 (totalCells + 30) 20 (-500) (-500)
                           ]
         cells = [unic i x y vx vy r | (i, x, y, vx, vy, r) <- rtup]
         -- multicells = concat [multi i x y vx vy a n minRad (seed + 324 * i) | (i, x, y, vx, vy, a, n) <- rtupm]

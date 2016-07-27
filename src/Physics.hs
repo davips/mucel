@@ -13,7 +13,7 @@ timeToCollision a b = fromMaybe veryLargeFloat $ timeToHit (particleInfo a) (par
 
 evolve world dt
   | dt == 0 = world
-  | hitTime > dt            = wdect dt $ anda dt world
+  | hitTime > dt            = wmapt recalculate $ anda dt world
   | otherwise               = evolve world' (dt - hitTime)
   where (hitTime, orgs') = wmin world
         orgs = if length orgs' > 1
@@ -26,27 +26,17 @@ f :: Struct Organism -> (Organism, Organism) -> Struct Organism
 f w (orga, orgb) = wupdi [orga', orgb'] w
     where (orga', orgb') = collide (witem orga w) (witem orgb w)
 
--- evolve world dt
---   | dt == 0 = world
---   | hitTime == 0            = wmapt recalculate $ wupdi [orga', orgb'] world
---   | hitTime > dt            = wdect dt $ anda dt world
---   | otherwise               = evolve (wdect hitTime $ anda hitTime world) (dt - hitTime)
---   where (hitTime, orgs) = wmin world
---         (orga, orgb)    = if length orgs > 1 then d2 (map (\(a,b)-> (orgId a, orgId b)) orgs) $ head orgs else head orgs
---         (orga', orgb')  = collide orga orgb
-
--- invert :: Float -> World -> World
--- invert t w = w'{smarked = t}
---   where w' = wmapt recalculate $ wmapi invertVel w
-
 invertVel :: Organism -> Organism
 invertVel org = updatePV org (orgPos org) ((-1) `sca` orgVel org)
+
+cai :: Float -> Organism -> Organism
+cai dt org = updatePV org (orgPos org) (V 0 (-dt * gravity) `add` orgVel org)
 
 recalculate :: Organism -> Organism -> Float -> Float
 recalculate a b t = timeToCollision a b
 
 anda :: Float -> World -> World
-anda t = wmapi $ walk t
+anda t w = wmapi (cai t . walk t) w
 
 walk :: Float -> Organism -> Organism
 walk dt u@(Uni p) = u {particleInfo = move dt p}
