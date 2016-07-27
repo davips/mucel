@@ -39,7 +39,7 @@ timeToHit (ParticleInfo _ p1 s1 r1') (ParticleInfo _ p2 s2 r2') = if baskaD < 0 
     tp = (baskamB + baskaDRooted) / baska2A
     tm = (baskamB - baskaDRooted) / baska2A
     (t0, r1, r2) = if sqrt p1p2sq < 0.99 * (r1' + r2')
-                   then (max tp tm, 0.99 * r1', 0.99 * r2')
+                   then (max tp tm, 0.95 * r1', 0.95 * r2')
                    else (min tp tm, r1', r2')
     p1p2sq = magSquared p1p2
     r1r2 = r1 + r2

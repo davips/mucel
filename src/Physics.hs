@@ -1,6 +1,7 @@
 module Physics(timeToCollision, evolve, kinEnergy) where
 import Config; import Debug; import Geometry; import Bio; import Struct
 import Data.Maybe --; import Data.List
+import Control.Arrow
 
 kinEnergy :: [Organism] -> [Float]
 kinEnergy = map $ (^2) . mag . orgVel
@@ -14,11 +15,16 @@ evolve world dt
   | dt == 0 = world
   | hitTime > dt            = wdect dt $ anda dt world
   | otherwise               = evolve world' (dt - hitTime)
-  where (hitTime, orgs) = wmin world
-        (orga, orgb)    = if length orgs > 1 then d2 ("empates", map (\(a,b)-> (orgId a, orgId b)) orgs) $ head orgs else head orgs
-        (orga', orgb')  = collide (witem orga tmp) (witem orgb tmp)
-        tmp             = anda hitTime world
-        world'          = wmapt recalculate $ wupdi [orga', orgb'] tmp
+  where (hitTime, orgs') = wmin world
+        orgs = if length orgs' > 1
+               then d2 ("empates", map (\(a,b)-> (orgId a, orgId b)) orgs') orgs'
+               else orgs'
+        wcollided       = foldl f (anda hitTime world) orgs
+        world'          = wmapt recalculate wcollided
+
+f :: Struct Organism -> (Organism, Organism) -> Struct Organism
+f w (orga, orgb) = wupdi [orga', orgb'] w
+    where (orga', orgb') = collide (witem orga w) (witem orgb w)
 
 -- evolve world dt
 --   | dt == 0 = world

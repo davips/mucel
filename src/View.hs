@@ -6,7 +6,7 @@ import Graphics.Gloss.Interface.Pure.Simulate (simulate, ViewPort)
 w2 = width / 2
 
 window stepFunction world = simulate g black fps world draw stepFunction
-  where g = InWindow "bla" (round 800, round 600) (0, 0) --FullScreen (1920, 1080)
+  where g = InWindow "mucel" (round 700, round 700) (0, 0) --FullScreen (1920, 1080)
 
 update _ timeStep world = evolve world timeStep
 
@@ -25,7 +25,7 @@ org2part (Multi _ _ orgs) = concatMap org2part orgs
 org2part (Wall _) = []
 
 draw :: World -> Picture
-draw world = verify world $ color white $ Scale 0.15 0.15 $ pictures $ quadro : sprites
+draw world = verify world $ color white $ Scale 0.35 0.35 $ pictures $ quadro : sprites
   where quadro = Line [(-w2,-w2), (-w2,w2), (w2,w2), (w2,-w2), (-w2,-w2)]
         sprites = map desenha $ concatMap org2part $ d2k $ wtoList world
         desenha part = drawSprite (particlePos part) (particleRad part)
