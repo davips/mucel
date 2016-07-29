@@ -1,5 +1,12 @@
 mucel - minimalist multicellular simulator
 ==================================
+![Screenshot](https://raw.githubusercontent.com/davips/mucel/master/shot.png)
+
+
+
+
+Installation
+============
 These instructions were tested on Debian Jessie, but should work on any GNU-Linux distro.
 Just replace "sudo apt-get" by your distro equivalent command and change the respective package names when needed.
 
@@ -43,7 +50,7 @@ stack exec mucel
 ```
 
 Features / To do list
------
+=====================
 * [x] 2D particle collision simulator
 * [x] visualize according to real elapsed time
 * [x] exact preemptory collision calculation
