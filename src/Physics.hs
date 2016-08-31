@@ -15,6 +15,7 @@ timeToCollision a b = fromMaybe veryLargeFloat $ timeToHit (particleInfo a) (par
 
 evolve world dt
   | dt == 0                 = world
+  -- | hitTime > dt            = world'
   | hitTime > dt            = S.anda dt world walk
   | otherwise               = evolve world' (dt - hitTime)
   where

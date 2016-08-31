@@ -39,7 +39,7 @@ timeToHit (ParticleInfo _ p1 s1 r1') (ParticleInfo _ p2 s2 r2') = if baskaD < 0 
     tp = (baskamB + baskaDRooted) / baska2A
     tm = (baskamB - baskaDRooted) / baska2A
     (t0, r1, r2) = if sqrt p1p2sq < 0.99 * (r1' + r2') -- se há intersecção suficiente, aceita que a segunda solução seja negativa
-                   then (max tp tm, 0.9899 * r1', 0.9899 * r2') -- reduz raio pra evitar escape, mas sem reduzir a ponto de ficar sem intersecção
+                   then (max tp tm, 0.97 * r1', 0.98 * r2') -- reduz raio pra evitar escape, mas sem reduzir a ponto de ficar sem intersecção
                    else (min tp tm, r1', r2')
     p1p2sq = magSquared p1p2
     r1r2 = r1 + r2
@@ -65,10 +65,11 @@ distPointToLine (V x0 y0) (V x1 y1) (V x2 y2) = abs(y21*x0 - x21*y0 + x2*y1 - y2
 
 decompoe :: Vec -> Vec -> Vec -> (Vec, Vec)
 decompoe pa pb va = (fica, vai)
-     where vai = sca t $ uni pd
-           fica = sub va vai
-           pd = sub pb pa
-           t = dot (uni pd) va
+     where vai   = sca t abuni
+           fica  = sub va vai
+           ab    = sub pb pa
+           t     = dot va abuni 
+           abuni = uni ab
 
 projectedVec :: Vec -> Vec -> Vec -> Vec
 projectedVec v a b = (uba `dot` v) `sca` uba

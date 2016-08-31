@@ -27,3 +27,6 @@ executable mucel
                      , vector
                      , random
                      , hmt
+                     , hmatrix
+                     , hmatrix-tests
+   
