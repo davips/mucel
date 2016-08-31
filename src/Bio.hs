@@ -17,7 +17,7 @@ orgRad = particleRad . particleInfo
 updatePV org p v = org {particleInfo = (particleInfo org) {particlePos = p, particleVel = v}}
 updateP org p = org {particleInfo = (particleInfo org) {particlePos = p}}
 updatePx org x = org {particleInfo = (particleInfo org) {particlePos = V x (vecY $ orgPos org) }}
-updatePy org y = org {particleInfo = (particleInfo org) {particlePos = V (vecX $ orgPos org) y }}
+updatePy org y = org {particleInfo = (particleInfo org) {particlePos = V (vecX  $ orgPos org) y }}
 distOrgs a b = dist (orgPos a) (orgPos b)
 
 -- data Photo = None | Bulb | Sensor deriving (Eq, Show)

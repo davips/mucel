@@ -2,7 +2,7 @@ module Struct(Struct(Struct, sitems), Identifyable(idn), build, setTime, findMin
 -- , wmapi, wmapt, wtoList, wmin, witem, wupdi, wdect, wupdt, soffset, smarked, wt)
 where
 import Debug; import Config
-import Data.List; import Music.Theory.Combinations
+import Data.List
 import Data.Function (on)
 import qualified Data.Vector as V
 

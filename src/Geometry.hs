@@ -1,4 +1,8 @@
-module Geometry(Vec(V), vecX, vecY, dist, AngularInfo(AngularInfo), roundResidual, veryLargeFloat, particleId, particlePos, particleVel, particleRad, mag,sca,add,timeToHit,ParticleInfo(ParticleInfo, SubParticleInfo), decompoe, distPointToLine, timeToHitWall, move, movea, mean, maxDist, massCenter, sub, angPos, uni) where
+{-# LANGUAGE ViewPatterns, TemplateHaskell #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving,
+            ViewPatterns,
+    ScopedTypeVariables #-}
+    module Geometry(Vec(V), vecX, vecY, dist, AngularInfo(AngularInfo), roundResidual, veryLargeFloat, particleId, particlePos, particleVel, particleRad, mag,sca,add,timeToHit,ParticleInfo(ParticleInfo, SubParticleInfo), decompoe, distPointToLine, timeToHitWall, move, movea, mean, maxDist, massCenter, sub, angPos, uni) where
 import Config
 import Data.Function (on)
 import Debug
@@ -13,23 +17,33 @@ data AngularInfo = AngularInfo {angPos::Float, angVel::Float} deriving (Show)
 
 sca t (V x y) = V (t*x) (t*y)
 sub (V ax ay) (V bx by) = V (ax-bx) (ay-by)
-dot (V ax ay) (V bx by) = ax*bx + ay*by
-uni v@(V x y) = V (x/t) (y/t) where t = mag v
+dot (V ax ay) (V bx by) =
+
+ ax *bx + ay*by
+uni v@(V x y) = V (x / t) (y / t)
+  where
+    t = mag v
 mag = sqrt . magSquared
 magSquared (V ax ay) = ax*ax + ay*ay
 roundResidual x | abs x < verySmallFloat = 0 :: Float
                 | otherwise = verySmallFloat
-
 timeToHitWall (ParticleInfo _ (V px py) (V vx vy) r) (ParticleInfo i (V ax ay) _ _)
-    | i == 0 = tempo py vy r ay
-    | i == 2 = tempom py vy r ay
-    | i == 1 = tempom px vx r ax
-    | i == 3 = tempo px vx r ax
-      where tempo p v r a = if v <= 0 then Nothing else Just $ (a - p - r) / v
-            tempom p v r a = if v >= 0 then Nothing else Just $ (p - a - r) / (-v)
+  | i == 0 = tempo py vy r ay
+  | i == 2 = tempom py vy r ay
+  | i == 1 = tempom px vx r ax
+  | i == 3 = tempo px vx r ax
+  where
+    tempo p v r a =
+        if v <= 0
+            then Nothing
+            else Just $ (a - p - r) / v
+    tempom p v r a =
+        if v >= 0
+            then Nothing
+            else Just $ (p - a - r) / (-v)
 
 timeToHit :: ParticleInfo -> ParticleInfo -> Maybe Float
-timeToHit (ParticleInfo _ p1 s1 r1') (ParticleInfo _ p2 s2 r2') = if baskaD < 0 then Nothing else maybeT
+timeToHit  (ParticleInfo _ p1 s1 r1') (ParticleInfo _ p2 s2 r2') = if baskaD < 0 then Nothing else maybeT
   where
     baska2A = 2 * mag s1s2 ^ 2
     baskamB = -2 * p1p2 `dot` s1s2
@@ -39,7 +53,7 @@ timeToHit (ParticleInfo _ p1 s1 r1') (ParticleInfo _ p2 s2 r2') = if baskaD < 0 
     tp = (baskamB + baskaDRooted) / baska2A
     tm = (baskamB - baskaDRooted) / baska2A
     (t0, r1, r2) = if sqrt p1p2sq < 0.99 * (r1' + r2') -- se há intersecção suficiente, aceita que a segunda solução seja negativa
-                   then (max tp tm, 0.9899 * r1', 0.9899 * r2') -- reduz raio pra evitar escape, mas sem reduzir a ponto de ficar sem intersecção
+                   then (max tp tm, 0.97 * r1', 0.98 * r2') -- reduz raio pra evitar escape, mas sem reduzir a ponto de ficar sem intersecção
                    else (min tp tm, r1', r2')
     p1p2sq = magSquared p1p2
     r1r2 = r1 + r2
@@ -65,10 +79,11 @@ distPointToLine (V x0 y0) (V x1 y1) (V x2 y2) = abs(y21*x0 - x21*y0 + x2*y1 - y2
 
 decompoe :: Vec -> Vec -> Vec -> (Vec, Vec)
 decompoe pa pb va = (fica, vai)
-     where vai = sca t $ uni pd
-           fica = sub va vai
-           pd = sub pb pa
-           t = dot (uni pd) va
+     where vai   = sca t abuni
+           fica  = sub va vai
+           ab    = sub pb pa
+           t     = dot va abuni
+           abuni = uni ab
 
 projectedVec :: Vec -> Vec -> Vec -> Vec
 projectedVec v a b = (uba `dot` v) `sca` uba
