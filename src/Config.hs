@@ -9,7 +9,7 @@ seed = 25860 :: Int
 (minRad, maxRad) = (15, 60) :: (Float, Float)
 (minPos, maxPos) = (-950, 950) :: (Float, Float)
 (minVel, maxVel) = (-700, 700) :: (Float, Float)
-(minVelSub, maxVelSub) = (-1, 1)::(Float, Float)
+(minVelSub, maxVelSub) = (-1, 1) :: (Float, Float)
 
 (minSub, maxSub) = (2, 15) :: (Float, Float)
 (minChainAng, maxChainAng) = (-pi / 3, pi / 3) :: (Float, Float)

@@ -1,6 +1,9 @@
 module Rnd (randomlist) where
-import System.Random
-import Data.List
+import           Data.List
+import           System.Random
 
 randomlist :: Float -> Float -> Int -> [Float]
-randomlist max min seed = map (\x -> min + (max - min) * x) $ unfoldr (Just . random) $ mkStdGen seed
+randomlist min max seed = map (\x -> min + x * (max - min)) $ rndlist seed
+
+rndlist :: Int -> [Float]
+rndlist seed = unfoldr (Just . random) $ mkStdGen seed

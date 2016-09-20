@@ -29,7 +29,7 @@ draw :: World -> Picture
 draw world = verify world $ color white $ Scale 0.34 0.34 $ pictures $ quadro : sprites
   where quadro = Line [(-w2,-w2), (-w2,w2), (w2,w2), (w2,-w2), (-w2,-w2)]
         sprites = map desenha $ concatMap org2part $ d2k $ V.toList $ sitems world
-        desenha part = drawSprite (particlePos part) (particleRad part)
+        desenha part = drawSprite (particlePos part) (pRad part)
 
 drawSprite :: Vec -> Float -> Picture
 drawSprite (V x y) r = translate x y $ color blue $ circleSolid r

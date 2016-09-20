@@ -22,7 +22,7 @@ executable mucel
   hs-source-dirs:      src
   main-is:             Main.hs
   default-language:    Haskell2010
-  other-modules:       Bio, Geometry, View, Rnd, Config, Physics, World, Debug, Struct
+  other-modules:       Bio, Geometry, View, Rnd, Config, Physics, World, Debug, Struct, Dna
   build-depends:       base 
 -- >= 4.7 && < 5
                      , gloss
@@ -33,7 +33,4 @@ executable mucel
                      , array
                      , vector
                      , random
---                     , mucelt
---                     , mucelatrix
---                     , mucelatrix-tests
    

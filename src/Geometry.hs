@@ -1,24 +1,20 @@
-{-# LANGUAGE ViewPatterns, TemplateHaskell #-}
-{-# LANGUAGE GeneralizedNewtypeDeriving,
-            ViewPatterns,
-    ScopedTypeVariables #-}
-    module Geometry(Vec(V), vecX, vecY, dist, AngularInfo(AngularInfo), roundResidual, veryLargeFloat, particleId, particlePos, particleVel, particleRad, mag,sca,add,timeToHit,ParticleInfo(ParticleInfo, SubParticleInfo), decompoe, distPointToLine, timeToHitWall, move, movea, mean, maxDist, massCenter, sub, angPos, uni) where
+module Geometry(Vec(V), vecX, vecY, dist, AngularInfo(AngularInfo), roundResidual, veryLargeFloat, particleId, particlePos, partVel, pRad, mag,sca,add,timeToHit,ParticleInfo(ParticleInfo, SubParticleInfo), decompoe, distPointToLine, timeToHitWall, move, movea, mean, maxDist, massCenter, sub, angPos, uni) where
+
 import Config
-import Data.Function (on)
+import  Data.Function (on)
 import Debug
 import Data.List
 
 data Vec = V{vecX::Float, vecY::Float} deriving (Eq, Show)
-data ParticleInfo = ParticleInfo {particleId::Int, particlePos::Vec, particleVel::Vec, particleRad::Float}
-                  | SubParticleInfo {particleId::Int, particlePos::Vec, particleDist::Float, particleAng::Float, particleRad::Float} deriving (Show)
+data ParticleInfo = ParticleInfo {particleId::Int, particlePos::Vec, partVel::Vec, pRad::Float}
+                  | SubParticleInfo {particleId::Int, particlePos::Vec, particleDist::Float, particleAng::Float, pRad::Float} deriving (Show)
 instance Eq ParticleInfo where ParticleInfo ida _ _ _ == ParticleInfo idb _ _ _ = ida == idb
 instance Ord ParticleInfo where compare = compare `on` particleId
-data AngularInfo = AngularInfo {angPos::Float, angVel::Float} deriving (Show)
+data  AngularInfo = AngularInfo {angPos::Float, angVel::Float} deriving (Show)
 
 sca t (V x y) = V (t*x) (t*y)
 sub (V ax ay) (V bx by) = V (ax-bx) (ay-by)
 dot (V ax ay) (V bx by) =
-
  ax *bx + ay*by
 uni v@(V x y) = V (x / t) (y / t)
   where
