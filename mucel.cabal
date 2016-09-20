@@ -33,7 +33,4 @@ executable mucel
                      , array
                      , vector
                      , random
---                     , mucelt
---                     , mucelatrix
---                     , mucelatrix-tests
    

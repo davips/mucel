@@ -1,8 +1,4 @@
-{-# LANGUAGE ViewPatterns, TemplateHaskell #-}
-{-# LANGUAGE GeneralizedNewtypeDeriving,
-            ViewPatterns,
-    ScopedTypeVariables #-}
-    module Geometry(Vec(V), vecX, vecY, dist, AngularInfo(AngularInfo), roundResidual, veryLargeFloat, particleId, particlePos, particleVel, particleRad, mag,sca,add,timeToHit,ParticleInfo(ParticleInfo, SubParticleInfo), decompoe, distPointToLine, timeToHitWall, move, movea, mean, maxDist, massCenter, sub, angPos, uni) where
+module Geometry(Vec(V), vecX, vecY, dist, AngularInfo(AngularInfo), roundResidual, veryLargeFloat, particleId, particlePos, particleVel, particleRad, mag,sca,add,timeToHit,ParticleInfo(ParticleInfo, SubParticleInfo), decompoe, distPointToLine, timeToHitWall, move, movea, mean, maxDist, massCenter, sub, angPos, uni) where
 import Config
 import Data.Function (on)
 import Debug
@@ -82,7 +78,7 @@ decompoe pa pb va = (fica, vai)
      where vai   = sca t abuni
            fica  = sub va vai
            ab    = sub pb pa
-           t     = dot va abuni
+           t     = dot va abuni 
            abuni = uni ab
 
 projectedVec :: Vec -> Vec -> Vec -> Vec
