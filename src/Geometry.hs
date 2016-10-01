@@ -1,5 +1,4 @@
-module Geometry(Vec(V), vecX, vecY, dist, AngularInfo(AngularInfo), roundResidual, veryLargeFloat, particleId, particlePos, partVel, pRad, mag,sca,add,timeToHit,ParticleInfo(ParticleInfo, SubParticleInfo), decompoe, distPointToLine, timeToHitWall, move, movea, mean, maxDist, massCenter, sub, angPos, uni) where
-
+module Geometry(Vec(V), vecX, vecY, dist, AngularInfo(AngularInfo), roundResidual, veryLargeFloat, particleId, particlePos, particleVel, particleRad, mag,sca,add,timeToHit,ParticleInfo(ParticleInfo, SubParticleInfo), decompoe, distPointToLine, timeToHitWall, move, movea, mean, maxDist, massCenter, sub, angPos, uni) where
 import Config
 import  Data.Function (on)
 import Debug
