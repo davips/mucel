@@ -19,9 +19,9 @@ orgId = particleId . particleInfo
 orgPos :: Organism -> Vec
 orgPos = particlePos . particleInfo
 (orgPosX,orgPosY) = (vecX . particlePos . particleInfo, vecY . particlePos . particleInfo)
-orgVel = partVel . particleInfo
-orgRad = pRad . particleInfo
-updatePV org p v = org { particleInfo = (particleInfo org) { particlePos = p, partVel = v } }
+orgVel = particleVel . particleInfo
+orgRad = particleRad . particleInfo
+updatePV org p v = org { particleInfo = (particleInfo org) { particlePos = p, particleVel = v } }
 updateP org p = org {particleInfo = (particleInfo org) {particlePos = p}}
 updatePx org x = org { particleInfo = (particleInfo org) { particlePos = V x (vecY $ orgPos org) } }
 updatePy org y = org {particleInfo = (particleInfo org) {particlePos = V (vecX  $ orgPos org) y }}

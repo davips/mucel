@@ -1,14 +1,38 @@
-module Dna (newdna) where
-import qualified Data.Vector as V
+--{-# LANGUAGE FlexibleInstances #-}
+module Dna (
+--Fea, newdna
+) where
+--import qualified Data.Vector as V
 import           Rnd
+data Solid  =  Solid deriving (Show)
+data Motor  =  Motor deriving (Show)
+data Sensor = Sensor deriving (Show)
+data Wire   =   Wire deriving (Show)
 
-data Feature = Sensor | Wire | Motor deriving (Show)
-feas = [Sensor,Wire,Motor]
-nfeas = length feas
-dnasize = 91 -- 1+6+12+24+48
+data F a = F a | None deriving (Show)
+data V = V Float Float deriving (Show)
+data Cell = Cell {soli :: F Solid, motr :: F Motor, sens :: F Sensor, wire :: F Wire, pos :: V, vel :: V} deriving (Show)
 
-newdna ::Int->[Feature]
-newdna seed = map (\idx -> feas !! round idx) $ take dnasize $ randomlist 0 (fromIntegral nfeas - 1) seed
+class Fe a where f :: Int -> F a
+instance Fe Solid where f x = if x == 0 then None else F Solid
+instance Fe Motor where f x = if x == 0 then None else F Motor
+instance Fe Sensor where f x = if x == 0 then None else F Sensor
+instance Fe Wire where f x = if x == 0 then None else F Wire
+
+ff a b c d = Cell (f a) (f b) (f c) (f d) (V 0 0) (V 0 0)
+
+-- feas = [Nothing, Just Motor, Just Sensor, Just Wire] --Solid
+--nfeas = length feas
+--dnasize = 91 -- 1+6+12+24+48
+
+ncombs = 2^4
+cells = [ff a b c d | a <- zu, b <- zu, c <- zu, d <- zu] where zu = [0, 1]
+
+newdna :: Int -> Int -> [Cell]
+newdna seed n = map (\idx -> cells !! round idx) $ take n $ randomlist 0 (fromIntegral ncombs - 1) seed
+
+-- queue of cells between two layers
+--segment n  = newdna
 
 -- data Photo = None | Bulb | Sensor deriving (Eq, Show)
 -- data Electro = Isolant | Wire | Battery | Motor V deriving (Show)

@@ -1,6 +1,7 @@
 module Struct(Struct(Struct, sitems), Identifyable(idn), build, setTime, findMin, updatePairs, getPair, anda, setItem)
 -- , wmapi, wmapt, wtoList, wmin, witem, wupdi, wdect, wupdt, soffset, smarked, wt)
 where
+
 import Debug; import Config
 import Data.List
 import Data.Function (on)
@@ -13,7 +14,7 @@ data Struct a = Struct {sitems :: V.Vector a, stimes :: V.Vector Float, ssize ::
 class Identifyable a where idn :: a -> Int
 
 build :: (Identifyable a, Show a) => (a -> a -> Float) -> [a] -> Struct a
-build ftime list = Struct items times n 0 m (V.map (\x -> quotRem x n) $ V.elemIndices m times)
+build ftime list = Struct items times n 0 m (V.map (`quotRem` n) $ V.elemIndices m times)
   where n = length list
         m = V.minimum times
         items = V.fromList list
@@ -22,7 +23,7 @@ build ftime list = Struct items times n 0 m (V.map (\x -> quotRem x n) $ V.elemI
 
 -- TODO otimizar substituindo varios maps por uma unica recursão com acumulador
 setTime :: Struct a -> V.Vector (Int, Int) -> (a -> a -> Float) -> Struct a
-setTime s@(Struct _ times n o m mins) pairs ftime = s {stimes = times', smin = m', smins = (V.map (\x -> quotRem x n) $ V.elemIndices m' times')}
+setTime s@(Struct _ times n o m mins) pairs ftime = s {stimes = times', smin = m', smins = V.map (`quotRem` n) $ V.elemIndices m' times'}
 -- setTime s@(Struct _ times n o m) pairs ftime = s {stimes = V.update times vecPairs, smin = min m (if null minlist then m else minimum minlist)}
 -- setTime dt s@(Struct _ times n o) pairs ftime = s {stimes = V.unsafeUpdate times $ V.map (tup ftime) pairs} --, soffset = 0}
   where tup :: (Int, Int) -> (Int, Float)

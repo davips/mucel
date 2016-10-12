@@ -33,4 +33,5 @@ executable mucel
                      , array
                      , vector
                      , random
+                     , text
    
