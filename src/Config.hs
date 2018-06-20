@@ -1,9 +1,9 @@
 module Config (minVelSub, maxVelSub, fps, activateDebug, width, seed, totalMultis, totalCells, minRad, maxRad, minPos, maxPos, minVel, maxVel, verySmallFloat, veryLargeFloat, minChainAng, maxChainAng, minSub, maxSub, kinMonitor, invMonitor, gravity) where
 activateDebug = True
 
-totalCells = 0 :: Int
+totalCells = 6 :: Int
 totalMultis = 0 :: Int
-fps = 30 :: Int
+fps = 20 :: Int
 width = 2000 :: Float
 seed = 25860 :: Int
 (minRad, maxRad) = (15, 60) :: (Float, Float)

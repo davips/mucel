@@ -21,15 +21,15 @@ verify world pic = if invMonitor then if null invasions then pic else d2 invasio
         os = V.toList $ sitems world
 
 org2part :: Organism -> [ParticleInfo]
-org2part (Uni p _) = [p]
-org2part (Multi _ cells) = concatMap org2part cells
+org2part (Uni p) = [p]
+org2part (Multi _ _ orgs) = concatMap org2part orgs
 org2part (Wall _) = []
 
 draw :: World -> Picture
 draw world = verify world $ color white $ Scale 0.34 0.34 $ pictures $ quadro : sprites
   where quadro = Line [(-w2,-w2), (-w2,w2), (w2,w2), (w2,-w2), (-w2,-w2)]
         sprites = map desenha $ concatMap org2part $ d2k $ V.toList $ sitems world
-        desenha part = drawSprite (particlePos part) (particleRad part)
+        desenha part = drawSprite (particlePos part) (pRad part)
 
 drawSprite :: Vec -> Float -> Picture
 drawSprite (V x y) r = translate x y $ color blue $ circleSolid r

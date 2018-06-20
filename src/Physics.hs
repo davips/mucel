@@ -11,9 +11,6 @@ kinEnergy = map $ (^2) . mag . orgVel
 timeToCollision :: Organism -> Organism -> Float
 timeToCollision (Wall wallInfo) b = fromMaybe veryLargeFloat $ timeToHitWall (particleInfo b) wallInfo
 timeToCollision a b@(Wall _) = timeToCollision b a
--- timeToCollision a@(Multi ainfo acells) b@(Multi binfo bcells)
---   | intersectedOrgs a b = build timeToCollision (catMaybes acells ++ catMaybes bcells)
--- timeToCollision a b@(Multi _ _) = timeToCollision b a
 timeToCollision a b = fromMaybe veryLargeFloat $ timeToHit (particleInfo a) (particleInfo b)
 
 evolve world dt
@@ -41,20 +38,19 @@ recalculate :: Organism -> Organism -> Float
 recalculate a b = timeToCollision a b
 
 walk :: Float -> Organism -> Organism
-walk dt u@(Uni p _) = u {particleInfo = move dt p}
-walk dt (Multi info cells) = Multi info' (map (walk dt) cells) where info' = info
--- walk dt (Multi p a os) = Multi p' a' os'
---   where p' = move dt p
---         a' = movea dt a
---         os' = map (\x -> x {particleInfo = transroda mc ang $ particleInfo x}) os
---         mc = particlePos p'
---         ang = angPos a'
+walk dt u@(Uni p) = u {particleInfo = move dt p}
+walk dt (Multi p a os) = Multi p' a' os'
+  where p' = move dt p
+        a' = movea dt a
+        os' = map (\x -> x {particleInfo = transroda mc ang $ particleInfo x}) os
+        mc = particlePos p'
+        ang = angPos a'
 walk _ x = x
 
--- transroda :: Vec -> Float -> ParticleInfo -> ParticleInfo
--- transroda mc ang spi@(SubParticleInfo i _ d a _) = spi {particlePos = mc `add` r}
---   where rot = ang + a
---         r = V (d * cos rot) (d * sin rot)
+transroda :: Vec -> Float -> ParticleInfo -> ParticleInfo
+transroda mc ang spi@(SubParticleInfo i _ d a _) = spi {particlePos = mc `add` r}
+  where rot = ang + a
+        r = V (d * cos rot) (d * sin rot)
 
 collide :: (Organism, Organism) -> (Organism, Organism)
 collide (wall@(Wall _), org)
