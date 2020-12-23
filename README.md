@@ -1,4 +1,4 @@
-mucel - minimalist multicellular simulator
+mucel - minimalistic multicellular simulator
 ==================================
 ![Screenshot](https://raw.githubusercontent.com/davips/mucel/master/shot.png)
 
